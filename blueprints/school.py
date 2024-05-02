@@ -89,12 +89,12 @@ def update_school(id):
      
 
 @school_bp.delete('/schools/delete/<id>')
-def delete_school(id):
+def soft_delete_school(id):
     try:
         data = request.json
         to_delete = school_service.update_school(id,data) 
         return jsonify({
-            "messaage":f" value {to_update}"
+            "messaage":f" value {to_delete}"
         })
     except Exception as e : 
         print(f"An error was caught Error={e}") #internal log for devs
