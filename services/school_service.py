@@ -1,19 +1,21 @@
 from models.schools import School
 class SchoolService(School):
+    
     def __init__(self,session):
         self.session = session
-    def get_schools():
-        return session.query(School).all()
     
-    def get_school(id):
-        school= session.query(School).filter(School.id==id).first()    
+    def get_schools(self):
+        return self.session.query(School).all()
+    
+    def get_school(self,id):
+        school= self.session.query(School).filter(School.id==id).first()    
         return school
     
-    def update_school(id,fields):
-        to_udate = self.get_school(id)
+    def update_school(self,id,fields):
+        to_update = self.get_school(id)
         if fields and to_update:
-            for ke,value in fields.items():
-                seattr(to_update,key,value)
+            for key,value in fields.items():
+                setattr(to_update,key,value)
                 self.session.commit()
             return to_update
         return []
