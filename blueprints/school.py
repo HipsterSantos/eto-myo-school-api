@@ -3,176 +3,112 @@ from models.schools import School
 from extentions.db_extension import Session
 import uuid
 from services.province_service import ProvinceService
+from services.school_service import SchoolService
 import os
+import json
 school_bp = Blueprint('school',__name__)
+
+session = Session()
 local_json_file =  os.path.join( os.path.dirname(__file__),'../static/province.json')
 province_service = ProvinceService(file_path=local_json_file)
-    
-dummy_schools = [
-    {
-        'name': 'School 1',
-        'email': 'school1@example.com',
-        'total_rooms': 50,
-        'province': 'California'
-    },
-    {
-        'name': 'School 2',
-        'email': 'school2@example.com',
-        'total_rooms': 30,
-        'province': 'New York'
-    },
-    {
-        'name': 'School 3',
-        'email': 'school3@example.com',
-        'total_rooms': 40,
-        'province': 'Texas'
-    },
-    {
-        'name': 'School 4',
-        'email': 'school4@example.com',
-        'total_rooms': 60,
-        'province': 'Florida'
-    },
-    {
-        'name': 'School 5',
-        'email': 'school5@example.com',
-        'total_rooms': 25,
-        'province': 'Illinois'
-    },
-    {
-        'name': 'School 6',
-        'email': 'school6@example.com',
-        'total_rooms': 35,
-        'province': 'Pennsylvania'
-    },
-    {
-        'name': 'School 7',
-        'email': 'school7@example.com',
-        'total_rooms': 45,
-        'province': 'Ohio'
-    },
-    {
-        'name': 'School 8',
-        'email': 'school8@example.com',
-        'total_rooms': 55,
-        'province': 'Georgia'
-    },
-    {
-        'name': 'School 9',
-        'email': 'school9@example.com',
-        'total_rooms': 70,
-        'province': 'North Carolina'
-    },
-    {
-        'name': 'School 10',
-        'email': 'school10@example.com',
-        'total_rooms': 20,
-        'province': 'Michigan'
-    },
-    {
-        'name': 'School 11',
-        'email': 'school11@example.com',
-        'total_rooms': 80,
-        'province': 'California'
-    },
-    {
-        'name': 'School 12',
-        'email': 'school12@example.com',
-        'total_rooms': 90,
-        'province': 'New York'
-    },
-    {
-        'name': 'School 13',
-        'email': 'school13@example.com',
-        'total_rooms': 55,
-        'province': 'Texas'
-    },
-    {
-        'name': 'School 14',
-        'email': 'school14@example.com',
-        'total_rooms': 65,
-        'province': 'Florida'
-    },
-    {
-        'name': 'School 15',
-        'email': 'school15@example.com',
-        'total_rooms': 75,
-        'province': 'Illinois'
-    },
-    {
-        'name': 'School 16',
-        'email': 'school16@example.com',
-        'total_rooms': 85,
-        'province': 'Pennsylvania'
-    },
-    {
-        'name': 'School 17',
-        'email': 'school17@example.com',
-        'total_rooms': 95,
-        'province': 'Ohio'
-    },
-    {
-        'name': 'School 18',
-        'email': 'school18@example.com',
-        'total_rooms': 100,
-        'province': 'Georgia'
-    },
-    {
-        'name': 'School 19',
-        'email': 'school19@example.com',
-        'total_rooms': 40,
-        'province': 'North Carolina'
-    },
-    {
-        'name': 'School 20',
-        'email': 'school20@example.com',
-        'total_rooms': 50,
-        'province': 'Michigan'
-    }
-]
+school_service = SchoolService(session)
 
 @school_bp.get('/schools')
 def  get_schools():
-    page = request.args.get(key='page',default=0,type=int)
-    session = Session()
-
-    print('one - value', province_service.get_random_province())
-    
-    result = session.query(School).all()
-    print(f"result -- {result[0].name}")
-    return jsonify({
-        "message": "result fetched is ",
-        "page": page,
-        "result": dummy_schools[: page if  page != 0 else len(dummy_schools)]
-    })
-    
-@school_bp.get('/schools/<int:id>')
+    try:
+        page = request.args.get(key='page',default=0,type=int)    
+        result = school_service.get_schools()
+        print(f"result -- {result}")
+        return jsonify({
+            "message": "result fetched is ",
+            "page": page,
+            "data": result
+        }),200
+        
+    except Exception as e : 
+        return jsonify({
+            "message": f"An error was caught Error={e}",
+        }),403
+        
+@school_bp.get('/schools/<id>')
 def get_school(id):
-    return jsonify({
-        "message":"result fetched ",
-        "result": dummy_schools[id]
-    })
-
+    try:
+        result_set = school_service.get_school(id)
+        if not result_set: raise Exception("ID invalido , favor passar um id valido")
+        return jsonify({
+            "message":"Sussceffully fetched the data",
+            "data": result_set
+        })
+    except Exception as e : 
+        print(f"An error was caught Error={e}")
+        return jsonify({
+            "message": "Id invalido",
+        }),403
+        
 @school_bp.post('/schools/create')
 def create_school():
-    data = request.data
-    db = request.form
-    dj = request.json
+    data = request.json
+    current_province = province_service.get_random_province().get("nome")
+    try:
+        new_school = school_service.create_school({
+            "name": data.get("name"),
+            "email": data.get("email"),
+            "total_room": data.get("total_room"),
+            "province": current_province
+            })
 
-    print(f'request-json- {dj}\n')
-    
-    print(f'request-form- {db}\n')
-
-    print(f" data is {data}")
-
-    return jsonify({
-        "data": dj
-    })
-
+        return jsonify({
+            "message":"succssfully created!",
+            "data": {
+                "name": new_school.name,
+                "email": new_school.email,
+                "total_room": new_school.total_room,
+                # "province" : province_service.get_full_province(new_school.province) or new_school.province
+            }   
+        })
+    except Exception as e : 
+        print(f"An error was caught Error={e}")
+        return jsonify({
+            "message": "Falha ao criar a escola, favor verificar os dados passados"
+        }),403
+         
 @school_bp.put('/schools/update/<id>')
 def update_school(id):
-    pass
+    try:
+        data = request.json
+        to_update = school_service.update_school(id,data) 
+        
+        return jsonify({
+            "messaage":f" value {to_update}"
+        })
+    except Exception as e : 
+        print(f"An error was caught Error={e}")
+        return jsonify({
+            "message": "Erro ao actualizar os dados , favor verificar a entrada ",
+        }),403
+     
 
 @school_bp.delete('/schools/delete/<id>')
 def delete_school(id):
-    pass
+    try:
+        data = request.json
+        to_delete = school_service.update_school(id,data) 
+        return jsonify({
+            "messaage":f" value {to_update}"
+        })
+    except Exception as e : 
+        print(f"An error was caught Error={e}") #internal log for devs
+        return jsonify({
+            "message": "Erro ao apagar esta escola , favor verificar os dados",
+        }),403
+
+@school_bp.delete('/schools/soft-delete/<id>')
+def delete_school(id):
+    try:
+        data = request.json
+        to_delete = school_service.update_school(id,data) 
+    except Exception as e : 
+        print(f"An error was caught Error={e}") #internal log for devs
+        return jsonify({
+            "message": "Erro ao apagar esta escola , favor verificar os dados",
+        }),403
