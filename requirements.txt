@@ -1,0 +1,9 @@
+flask
+gunicorn
+werkzeug
+sqlalchemy
+openpyxl
+pandas
+psycopg2
+psycopg2-binary
+uuid

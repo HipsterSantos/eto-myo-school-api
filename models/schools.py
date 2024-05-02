@@ -5,5 +5,5 @@ class School(Base):
     
     id = Column(UUID,primary_key=True)
     name = Column(String,unique=True,nullable=False)
-    email = Column(String(80))
+    email = Column(String)
     province = Column(String(50))

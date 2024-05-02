@@ -1,5 +1,7 @@
 from flask import Blueprint,request,jsonify
-
+from models.schools import School
+from extentions.db_extension import Session
+import uuid
 school_bp = Blueprint('school',__name__)
 
 dummy_schools = [
@@ -127,13 +129,30 @@ dummy_schools = [
 
 
 @school_bp.get('/schools')
-def get_schools():
+def  get_schools():
     page = request.args.get(key='page',default=0,type=int)
+    session = Session()
+    # for _ in range(15):
+    #     school = School(
+    #         id=str(uuid.uuid4()),  # Generate UUID for the primary key
+    #         name=f'Dummy School {_}',
+    #         email=f'dummy{_}@example.com',
+    #         province='Dummy Province'
+    #     )
+    # session.add(school)
+
+    # # Commit the changes to the database
+    # session.commit()
+    result = session.query(School).all()
+    
+    print(f"result -- {result[0].name}")
+    
     return jsonify({
         "message": "result fetched is ",
         "page": page,
         "result": dummy_schools[: page if  page != 0 else len(dummy_schools)]
     })
+    
 @school_bp.get('/schools/<int:id>')
 def get_school(id):
     return jsonify({
@@ -156,3 +175,11 @@ def create_school():
     return jsonify({
         "data": dj
     })
+
+@school_bp.put('/schools/update/<id>')
+def update_school(id):
+    pass
+
+@school_bp.delete('/schools/delete/<id>')
+def delete_school(id):
+    pass
