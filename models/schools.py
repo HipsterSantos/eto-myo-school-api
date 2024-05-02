@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine,Column,Integer,String,UUID
+from sqlalchemy import create_engine,Column,Integer,String,UUID,Boolean
 from extentions.db_extension import Base
 class School(Base):
     __tablename__ = "schools"    
@@ -7,3 +7,4 @@ class School(Base):
     name = Column(String,unique=True,nullable=False)
     email = Column(String)
     province = Column(String(50))
+    soft_delete = Column(Boolean,default=False)

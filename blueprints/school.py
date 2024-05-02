@@ -2,8 +2,9 @@ from flask import Blueprint,request,jsonify
 from models.schools import School
 from extentions.db_extension import Session
 import uuid
+from services.province_service import ProvinceService
 school_bp = Blueprint('school',__name__)
-
+    
 dummy_schools = [
     {
         'name': 'School 1',
@@ -132,6 +133,7 @@ dummy_schools = [
 def  get_schools():
     page = request.args.get(key='page',default=0,type=int)
     session = Session()
+    random_province  = ProvinceService.get_random_province()
     # for _ in range(15):
     #     school = School(
     #         id=str(uuid.uuid4()),  # Generate UUID for the primary key
@@ -150,7 +152,8 @@ def  get_schools():
     return jsonify({
         "message": "result fetched is ",
         "page": page,
-        "result": dummy_schools[: page if  page != 0 else len(dummy_schools)]
+        "result": dummy_schools[: page if  page != 0 else len(dummy_schools)],
+        "province": random_province
     })
     
 @school_bp.get('/schools/<int:id>')
