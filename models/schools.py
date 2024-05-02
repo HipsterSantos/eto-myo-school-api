@@ -7,4 +7,4 @@ class School(Base):
     name = Column(String,unique=True,nullable=False)
     email = Column(String)
     province = Column(String(50))
-    soft_delete = Column(Boolean,default=False)
+    # soft_delete = Column(Boolean,default=False)
