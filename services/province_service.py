@@ -3,21 +3,16 @@ import json
 import random
 
 class ProvinceService:
-    def __init__(self):
-        pass
-    
-    @staticmethod
-    def load_provinces():
-        with open(os.path.join(os.path.dirname(__file__), '../static/province.json')) as json_file:
+    def __init__(self, file_path):
+        self.provinces = self.load_provinces(file_path)
+
+    def load_provinces(self, file_path):
+        with open(file_path) as json_file:
             loaded_province = json.load(json_file)
         return list(loaded_province["Angola"]["Provincias"])
-    
-    @staticmethod
-    def get_province(index):
-        provinces = ProvinceService.load_provinces()
-        return provinces[index] if index < len(provinces) else []
-    
-    @staticmethod
-    def get_random_province():
-        provinces = ProvinceService.load_provinces()
-        return random.choice(provinces) if provinces else None
+
+    def get_province(self, index):
+        return self.provinces[index] if index < len(self.provinces) else None
+
+    def get_random_province(self):
+        return random.choice(self.provinces) if self.provinces else None
