@@ -32,6 +32,13 @@ def  get_schools():
         
 @school_bp.get('/schools/<id>')
 def get_school(id):
+    """
+    Get all schools.
+    ---
+    responses:
+      200:
+        description: A list of schools.
+    """
     try:
         result_set = school_service.get_school(id)
         if not result_set: raise Exception("ID invalido , favor passar um id valido")
