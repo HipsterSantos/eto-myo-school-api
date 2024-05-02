@@ -8,3 +8,5 @@ psycopg2
 psycopg2-binary
 uuid
 alembic
+flask-swagger-ui
+flasgger
