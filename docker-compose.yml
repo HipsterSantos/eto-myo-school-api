@@ -1,0 +1,27 @@
+version: '3'
+services:
+  web:
+    build: 
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "5500:5500"
+    depends_on:
+      - postgres_db
+    environment:
+      FLASK_ENV: development
+      FLASK_APP: app.py
+      POSTGRES_HOST: postgres_db
+      POSTGRES_PORT: 5433
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: '1234'
+      POSTGRES_DB: postgres
+      DB_PROTOCOL: 'postgresql://'
+  postgres_db:
+    image: postgres
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: '1234'
+      POSTGRES_DB: 'postgres'
