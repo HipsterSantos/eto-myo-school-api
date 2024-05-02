@@ -15,7 +15,7 @@ class ProvinceService:
         return self.provinces[index] if index < len(self.provinces) else None
     
     def get_full_province(self,name):
-        return filter(lambda x: x['nome'] == nome, self.provinces)
+        return filter(lambda x: x['nome'] == name, self.provinces)
     
     def get_random_province(self):
         return random.choice(self.provinces) if self.provinces else None

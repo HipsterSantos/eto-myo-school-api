@@ -63,6 +63,8 @@ class SchoolService(School):
             self.session.rollback()
             print(f'from <school_service> Error= {e} ')
             # raise Exception(f'from <school_service> Error= {e} ')
+    def school_exist(self,id):
+        return  self.get_school(id) is not None
     
     def update_school(self,id,fields):
         try:
@@ -96,7 +98,7 @@ class SchoolService(School):
         
     def soft_delete_school(self, id):
         try:
-            school = self.session.query(School).filter(School.id == id).first()
+            school = self.get_school(id)
             if school:
                 school.soft_deleted = True
                 self.session.commit()
@@ -104,5 +106,5 @@ class SchoolService(School):
             return False
         except: 
             self.session.rollback()
-            print(f'error {e}')
+            print(f'error {e}') # for dev log
             raise Exception(f'from <school_service> Error= {e} ')

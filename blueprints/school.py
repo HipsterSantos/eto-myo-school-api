@@ -87,28 +87,34 @@ def update_school(id):
             "message": "Erro ao actualizar os dados , favor verificar a entrada ",
         }),403
      
-
 @school_bp.delete('/schools/delete/<id>')
-def soft_delete_school(id):
-    try:
-        data = request.json
-        to_delete = school_service.update_school(id,data) 
-        return jsonify({
-            "messaage":f" value {to_delete}"
-        })
-    except Exception as e : 
-        print(f"An error was caught Error={e}") #internal log for devs
-        return jsonify({
-            "message": "Erro ao apagar esta escola , favor verificar os dados",
-        }),403
-
-@school_bp.delete('/schools/soft-delete/<id>')
 def delete_school(id):
     try:
-        data = request.json
-        to_delete = school_service.update_school(id,data) 
+        exists = school_service.school_exist(id)
+        if not exists: raise Exception("ID invalido ")
+        to_delete = school_service.delete_school(id) 
+        return jsonify({
+            "message": "Escola apagada com sucesso",
+            "data": to_delete
+        }), 200
     except Exception as e : 
         print(f"An error was caught Error={e}") #internal log for devs
         return jsonify({
             "message": "Erro ao apagar esta escola , favor verificar os dados",
         }),403
+        
+@school_bp.delete('/schools/soft-delete/<id>')
+def soft_delete_school(id):
+    try:
+        to_delete = school_service.soft_delete_school(id) 
+        return jsonify({
+            "message": "Escola apagado com sucesso",
+            "data": to_delete
+        }), 200
+    except Exception as e : 
+        print(f"An error was caught Error={e}") #internal log for devs
+        return jsonify({
+            "message": "Erro ao apagar esta escola , favor verificar os dados",
+        }),403
+
+

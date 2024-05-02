@@ -13,8 +13,13 @@ def upload_xlsx():
         if 'file' not in request.files or not request.files:
             return jsonify({
                 "message":"Favor adiconar o arquivo",
-                "status":403
-            }), 403
+                "status":400
+            }), 400
+            
+        allowed_extensions = {'xlsx', 'xls'}
+        if not request.files['file'].filename.lower().endswith(tuple(allowed_extensions)):
+            return jsonify({'message': 'O arquivo deve estar no formato  Excel (xlsx, xls)'}), 400
+        
         file = UploadService(request.files['file'])
 
         schools = file.from_excel_to_rows()
@@ -26,11 +31,7 @@ def upload_xlsx():
                 "total_room": school.total_room,
                 "province": school.province
             })
-            )
-
-        
-        print(f'result {result_set} ')
-        
+            )        
         return jsonify({
             "message":" Todos os dados do excel importados com sucesso",
             "data": result_set
@@ -39,4 +40,4 @@ def upload_xlsx():
         print(f"an Error was found  Error =  {e} ")
         return jsonify({
             "message":" Erro ao importar dados do arquivo selecionado"
-        }),403
+        }),400
