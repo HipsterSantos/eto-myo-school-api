@@ -34,53 +34,52 @@ class SchoolService(School):
         try:
             fetched = self.session.query(School).all()
             return [
-                        { 
-                            "id":school.id,
-                            "name":school.name,
-                            "email": school.email,
-                            "total_room": school.total_room,
-                            "province": school.province
-                        } for school in  fetched
+                    { 
+                        **self.de_serialize(school)
+                    } for school in  fetched
                 ]
         except Exception as e :
             self.session.rollback()
             print(f'error {e}')
             raise Exception(f'from <school_service> Error= {e} ')
     
-    
     def get_school(self,id):
         try:
             school= self.session.query(School).filter(School.id==id).first()    
-            print(f'schooll {school}')
-            return {
+            # print(f'schooll {school}')
+            return school
+        except Exception as e:
+            self.session.rollback()
+            print(f'from <school_service> Error= {e} ')
+            # raise Exception(f'from <school_service> Error= {e} ')
+    
+    def school_exist(self,email):
+        school= self.session.query(School).filter(School.email==email).first()    
+        return  school is not None
+    
+    def de_serialize(self, school:School):
+        print(f"{school.id}")
+        return {
                 "id": school.id,
                 "name": school.name,
                 "email": school.email,
                 "total_room": school.total_room,
                 "province": school.province
             }
-        except Exception as e:
-            self.session.rollback()
-            print(f'from <school_service> Error= {e} ')
-            # raise Exception(f'from <school_service> Error= {e} ')
-    def school_exist(self,id):
-        return  self.get_school(id) is not None
     
     def update_school(self,id,fields):
         try:
             to_update = self.get_school(id)
+            # to_update = School(**to_update)
             if fields and to_update:
                 for key,value in fields.items():
-                    print(f'to_update --{key} {value} {to_update}')
-                    to_update[key] = value
-                    # setattr(to_update,key,value)
+                    setattr(to_update,key,value)
                 self.session.commit()
-                print(f'toupdate--{to_update}')
-                return to_update
+                return self.de_serialize(to_update)
             return None
         except Exception as e : 
             self.session.rollback()
-            print(f'error {e}')
+            print(f'error update{e}')
             raise Exception(f'from <school_service> Error= {e} ')
         
     def delete_school(self, id):

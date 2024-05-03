@@ -39,5 +39,5 @@ def upload_xlsx():
     except Exception as e:
         print(f"an Error was found  Error =  {e} ")
         return jsonify({
-            "message":" Erro ao importar dados do arquivo selecionado"
+            "message":" Erro ao importar dados do arquivo selecionado,<possivei emails ja existem no banco>"
         }),400
