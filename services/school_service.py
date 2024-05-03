@@ -19,12 +19,7 @@ class SchoolService(School):
             self.session.add(school)
             self.session.commit()
 
-            return {
-                "name": school.name,
-                "email": school.email,
-                "total_room": school.total_room,
-                "province": school.province
-            }
+            return self.de_serialize(school)
         except Exception as e:
             self.session.rollback()
             print(f'error {e}')
