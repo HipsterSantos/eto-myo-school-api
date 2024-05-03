@@ -8,6 +8,7 @@ To explore the API documentation, navigate to [/api/docs/](#).
 
 #### Endpoints
 
+- **Import excel file,all data will automatically inserted to database:** `POST /import/upload-file`
 - **Create School:** `POST /school`
 - **Update School:** `PUT /school`
 - **Delete School:** `DELETE /school`
