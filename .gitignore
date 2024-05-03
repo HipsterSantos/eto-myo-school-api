@@ -5,3 +5,4 @@ services/__pycache__
 blueprints/__pycache__
 test.py
 Dockerfile.prod
+models/users.py
