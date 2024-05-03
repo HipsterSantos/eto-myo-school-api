@@ -55,7 +55,7 @@ You have three options for running this application:
 3. **Pulling from Docker Hub:**
    - You can also pull the image from Docker Hub directly:
      ```
-     docker pull eto-moy-app
+     docker pull santosfefe4/eto-moy-api-school
      ```
 
 #### Authority
@@ -63,5 +63,6 @@ You have three options for running this application:
 - **Name:** Santos Campos
 - **GitHub:** [HipsterSantos](https://github.com/HipsterSantos)
 - **Email:** santoscampos269@gmail.com
+- **DockerHub:** https://hub.docker.com/r/santosfefe4/eto-moy-api-school
 
 Feel free to adjust the configuration based on your environment requirements.

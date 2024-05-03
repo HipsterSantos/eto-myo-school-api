@@ -6,3 +6,4 @@ blueprints/__pycache__
 test.py
 Dockerfile.prod
 models/users.py
+Dockerfile.prod

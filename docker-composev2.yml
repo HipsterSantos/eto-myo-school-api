@@ -12,14 +12,15 @@ services:
     environment:
       FLASK_ENV: development
       FLASK_APP: app.py
-      DB_HOST: postgresdb   # IP address of postgresdb service
+      DB_HOST: 172.18.0.2
       DB_PORT: 5432
       DB_USER: postgres
       DB_PASSWORD: 1234
       DB_NAME: postgres
       PROTOCOL: postgresql://
     networks:
-      - school_network
+      school_network:
+        ipv4_address: 172.18.0.3
 
   postgresdb:
     image: postgres
@@ -28,10 +29,12 @@ services:
     environment:
       POSTGRES_PASSWORD: '1234'
     networks:
-      - school_network
-
+      school_network:
+        ipv4_address: 172.18.0.2   # IP address of postgresdb service
 
 networks:
   school_network:
     driver: bridge
-
+    ipam:
+      config:
+        - subnet: 172.18.0.0/16
