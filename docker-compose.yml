@@ -4,24 +4,23 @@ services:
     build: 
       context: .
       dockerfile: Dockerfile.dev
+    restart: on-failure
     ports:
-      - "5500:5500"
+      - "5000:5000"
     depends_on:
       - postgres_db
     environment:
       FLASK_ENV: development
       FLASK_APP: app.py
-      POSTGRES_HOST: postgres_db
-      POSTGRES_PORT: 5433
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: '1234'
-      POSTGRES_DB: postgres
-      DB_PROTOCOL: 'postgresql://'
+      DB_HOST: 0.0.0.0
+      DB_PORT: 5433
+      DB_USER: postgres
+      DB_PASSWORD: 1234
+      DB_NAME: postgres
+      DB_PROTOCOL: postgresql://
   postgres_db:
     image: postgres
     ports:
       - "5433:5432"
     environment:
-      POSTGRES_USER: postgres
       POSTGRES_PASSWORD: '1234'
-      POSTGRES_DB: 'postgres'

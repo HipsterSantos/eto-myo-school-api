@@ -1,5 +1,12 @@
 from models.schools import School
+from .province_service import ProvinceService
 import uuid
+import os
+import json
+
+local_json_file =  os.path.join( os.path.dirname(__file__),'../static/province.json')
+province_service = ProvinceService(file_path=local_json_file)
+
 class SchoolService(School):
     
     def __init__(self,session):
@@ -7,12 +14,13 @@ class SchoolService(School):
     
     def create_school(self,data):
         try:
-            print(f'data-- {data}')
+            current_province = province_service.get_random_province().get("nome")
+            print(f'data-- {current_province}')
             id = str(uuid.uuid4())
             name = data.get('name')
             email = data.get('email')
             total_room = data.get('total_room')
-            province = data.get('province')
+            province = current_province
             
             school = School(id=id,name=name, email=email, total_room=total_room, province=province)
             
@@ -25,9 +33,10 @@ class SchoolService(School):
             print(f'error {e}')
             raise Exception(f'from <school_service> Error= {e} ')
     
-    def get_schools(self):
+    def get_schools(self,page=1,per_page=20):
+        next_page = (page - 1) * per_page
         try:
-            fetched = self.session.query(School).all()
+            fetched = self.session.query(School).filter(School.soft_delete == False).offset(next_page).limit(per_page).all()
             return [
                     { 
                         **self.de_serialize(school)
@@ -53,7 +62,7 @@ class SchoolService(School):
         return  school is not None
     
     def de_serialize(self, school:School):
-        print(f"{school.id}")
+        print(f" full province detials: {province_service.get_full_province(school.name)}")
         return {
                 "id": school.id,
                 "name": school.name,

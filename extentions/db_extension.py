@@ -3,6 +3,8 @@ from sqlalchemy.orm import sessionmaker,declarative_base
 # from sqlalchemy.ext.declarative import declarative_base
 import config.db_config as db_config
 
+print(f"env vars - {db_config.PROTOCOL}{db_config.DB_USER}:{db_config.DB_PASSWORD}@{db_config.DB_HOST}:{db_config.DB_PORT}/{db_config.DB_NAME}")
+
 try:
     Engine = create_engine(f"{db_config.PROTOCOL}{db_config.DB_USER}:{db_config.DB_PASSWORD}@{db_config.DB_HOST}:{db_config.DB_PORT}/{db_config.DB_NAME}")
     Base = declarative_base()

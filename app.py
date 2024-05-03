@@ -13,17 +13,17 @@ def create_app():
         app.register_blueprint(upload_bp,url_prefix='/import')
         Base.metadata.create_all(bind=Engine)
         SWAGGER_URL = '/api/docs'
-        API_URL = './swagger.json'
+        API_URL = '/static/swagger.json'
         swagger_ui_blueprint = get_swaggerui_blueprint(
             SWAGGER_URL,
             API_URL,
             config={
-                'app_name': "Your App Name"
+                'app_name': "School api"
             }
         )
 
         app.register_blueprint(swagger_ui_blueprint, url_prefix=SWAGGER_URL)
-        swagger = Swagger(app)
+
         return app
     except Exception as e :
         print(f" An error occured {e}")

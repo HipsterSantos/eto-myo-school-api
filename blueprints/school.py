@@ -4,13 +4,10 @@ from extentions.db_extension import Session
 import uuid
 from services.province_service import ProvinceService
 from services.school_service import SchoolService
-import os
-import json
-school_bp = Blueprint('school',__name__)
 
+
+school_bp = Blueprint('school',__name__)
 session = Session()
-local_json_file =  os.path.join( os.path.dirname(__file__),'../static/province.json')
-province_service = ProvinceService(file_path=local_json_file)
 school_service = SchoolService(session)
 
 @school_bp.get('/schools')
@@ -37,14 +34,6 @@ def  get_schools():
         
 @school_bp.get('/schools/<id>')
 def get_school(id):
-    """
-    Esse endpoint retortana uma escolas disponiveis no banco de dados
-    filtrado pelo id passado pelo usuariio
-    ---
-    responses:
-      200:
-        description: A list of schools.
-    """
     try:
         result_set = school_service.get_school(id)
         if not result_set: 
@@ -64,45 +53,17 @@ def get_school(id):
         
 @school_bp.post('/schools/create')
 def create_school():
-    """
-    Create a new school.
-    ---
-    parameters:
-      - name: body
-        in: body
-        required: true
-        description: The school data.
-        schema:
-          id: School
-          properties:
-            name:
-              type: string
-              description: The name of the school.
-            email:
-              type: string
-              description: The email of the school.
-            total_room:
-              type: integer
-              description: The total number of rooms in the school.
-    responses:
-      200:
-        description: Successfully created.
-      403:
-        description: Error creating the school.
-    """
     data = request.json
     if school_service.school_exist(data.get("email")):
         return jsonify({
             "message":"Ja existe uma escola registrada com este email"
         }),400
         
-    current_province = province_service.get_random_province().get("nome")
     try:
         new_school = school_service.create_school({
             "name": data.get("name"),
             "email": data.get("email"),
             "total_room": data.get("total_room"),
-            "province": current_province
             })
 
         return jsonify({
@@ -117,37 +78,6 @@ def create_school():
          
 @school_bp.put('/schools/update/<id>')
 def update_school(id):
-    """
-    Update an existing school.
-    ---
-    parameters:
-      - name: id
-        in: path
-        type: string
-        required: true
-        description: The ID of the school to update.
-      - name: body
-        in: body
-        required: true
-        description: The updated school data.
-        schema:
-          id: School
-          properties:
-            name:
-              type: string
-              description: The updated name of the school.
-            email:
-              type: string
-              description: The updated email of the school.
-            total_room:
-              type: integer
-              description: The updated total number of rooms in the school.
-    responses:
-        200:
-            description: Successfully updated.
-        403:
-            description: Error updating the school.
-        """
     try:
         data = request.json
         if not school_service.get_school(id):
@@ -168,18 +98,7 @@ def update_school(id):
      
 @school_bp.delete('/schools/delete/<id>')
 def delete_school(id):
-    """
-    Delete a school by ID.
-    ---
-    parameters:
-      - name: id
-        in: path
-        type: string
-        required: true
-        description: The ID of the school to delete.
-    responses:
-      200
-      """
+   
     try:
         exists = school_service.get_school(id)
         if not exists:
@@ -201,18 +120,6 @@ def delete_school(id):
         
 @school_bp.delete('/schools/soft-delete/<id>')
 def soft_delete_school(id):
-    """
-    Delete a school by ID.
-    ---
-    parameters:
-      - name: id
-        in: path
-        type: string
-        required: true
-        description: The ID of the school to delete.
-    responses:
-      200
-      """
     try:
         exists = school_service.get_school(id)
         if not exists:

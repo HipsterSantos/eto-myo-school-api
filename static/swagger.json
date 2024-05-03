@@ -1,0 +1,215 @@
+{
+  "definitions": {},
+  "info": {
+    "description": "Nesta api vai poder criar escola, actualizar seus dados , deleter ,soft delete or hard delete, tabm vai poder importar um excel e carregar no banco",
+    "termsOfService": "/tos",
+    "title": "Eto Myo School api by Santos campos",
+    "version": "0.0.1",
+    "AccessData": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "server": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "paths": {
+    "/import/upload-file": {
+      "post": {
+        "summary": "Upload Arquivo Excel e importa prar base de dados",
+        "parameters": [
+          {
+            "name": "file",
+            "in": "formData",
+            "description": "Arquivo Excel a ser carregado",
+            "required": true,
+            "type": "file"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Data imported successfully"
+          },
+          "400": {
+            "description": "Ocorreu um erro ao importar os dados"
+          }
+        }
+      }  
+    },
+    "/schools": {
+      "get": {
+        "summary": "Carrega todas as escola, aplicando paginação, 20 a cada consulta",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Numero da paginação a ser filtrada",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Aqui e carrega a lista de escola adicionadas ao banco ate ao momento"
+          },
+          "403": {
+            "description": "Erro ao carregar as escolas"
+          }
+        }
+      }
+    },
+      "/schools/{id}": {
+        "get": {
+          "summary": "Filtrar escola pelo id ",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "type": "string",
+              "description": "Passe o id de uma escola e carregue seus dados"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Detalhes da escolha carregada com o id passado acima"
+            },
+            "403": {
+              "description": "Invalid ID"
+            }
+          }
+        }
+      },
+      "/schools/create": {
+        "post": {
+          "summary": "Esse endpoint cria uma nova(entry) escola",
+          "parameters": [
+            {
+              "name": "body",
+              "in": "body",
+              "required": true,
+              "schema": {
+                "id": "School",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  },
+                  "total_room": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Successfully created"
+            },
+            "400": {
+              "description": "Ja existe uma escoal com este Email "
+            },
+            "403": {
+              "description": "Erro ao criar a escola ,verifca os dados passado , ou se tem acesso ao banco"
+            }
+          }
+        }
+      },
+      "/schools/update/{id}": {
+        "put": {
+          "summary": "Actulalizar uma escola existent",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "type": "string",
+              "description": "O ID da escola a ser actualizado"
+            },
+            {
+              "name": "body",
+              "in": "body",
+              "required": true,
+              "schema": {
+                "id": "School",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  },
+                  "total_room": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Successfully updated"
+            },
+            "403": {
+              "description": "Erro ao actualizar escola"
+            }
+          }
+        }
+      },
+      "/schools/delete/{id}": {
+        "delete": {
+          "summary": "Hard delete , apaga o dado do banco direitament , passe o ID e vualaa, o dado vai sumir do banco, é critico porisso tem um endpoint para soft_delete",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "type": "string",
+              "description": "O ID da escola"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "School deleted successfully"
+            },
+            "403": {
+              "description": "Erro ao delter a escola , certifique-se que esta passando os dados corretos"
+            }
+          }
+        }
+      },
+      "/schools/soft-delete/{id}": {
+        "delete": {
+          "summary": "Soft delete é a forma mais ideal de apagar um dado evitando que o dado seje perdido para fins de compliances",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "type": "string",
+              "description": "O ID da escola "
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "School soft deleted successfully"
+            },
+            "403": {
+              "description": "Erro ao deleter a escola"
+            }
+          }
+        }
+      }
+    
+    },
+  "swagger": "2.0"
+}
